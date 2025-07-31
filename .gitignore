@@ -47,6 +47,8 @@ lerna-debug.log*
 .tmp
 
 # Runtime data
+static/*
+!static/defaultPlant.png
 pids
 *.pid
 *.seed

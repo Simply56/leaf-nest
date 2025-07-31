@@ -96,3 +96,138 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+# Plant Watering API
+
+A simple REST API for managing plants and tracking watering schedules using NestJS and SQLite.
+
+## Features
+
+- Create, read, update, and delete plants
+- Track when plants were last watered
+- Upload plant images
+- SQLite database for data persistence
+- Input validation and error handling
+
+## Installation
+
+```bash
+npm install
+```
+
+## Running the app
+
+```bash
+# development
+npm run start
+
+# watch mode
+npm run start:dev
+
+# production mode
+npm run start:prod
+```
+
+## API Endpoints
+
+### Plants
+
+#### GET /plants
+Get all plants
+
+#### GET /plants/:id
+Get a specific plant by ID
+
+#### POST /plants
+Create a new plant
+
+**Request Body:**
+```json
+{
+  "name": "My Plant",
+  "imagePath": "./static/defaultPlant.png",
+  "lastWatered": "2025-01-29T00:00:00.000Z"
+}
+```
+
+#### PATCH /plants/:id
+Update a plant
+
+**Request Body:**
+```json
+{
+  "name": "Updated Plant Name",
+  "imagePath": "./static/newImage.png"
+}
+```
+
+#### DELETE /plants/:id
+Delete a plant
+
+#### POST /plants/:id/water
+Water a plant (updates lastWatered timestamp)
+
+**Request Body:**
+```json
+{
+  "wateredAt": "2025-01-29T10:30:00.000Z"
+}
+```
+
+#### POST /plants/:id/image
+Upload a plant image
+
+**Request:**
+- Method: `POST`
+- Content-Type: `multipart/form-data`
+- Body: Form data with field name `image` containing the image file
+
+**Supported formats:** JPG, JPEG, PNG, GIF
+**File size limit:** 5MB
+
+**Example using curl:**
+```bash
+curl -X POST http://localhost:3000/plants/1/image \
+  -F "image=@/path/to/your/image.jpg"
+```
+
+**Response:**
+```json
+{
+  "id": 1,
+  "name": "My Plant",
+  "imagePath": "/static/plant_1_1704067200000.jpg",
+  "lastWatered": "2025-01-29T10:30:00.000Z"
+}
+```
+
+**Response:**
+```json
+{
+  "id": 1,
+  "name": "My Plant",
+  "imagePath": "./static/defaultPlant.png",
+  "lastWatered": "2025-01-29T10:30:00.000Z"
+}
+```
+
+## Database
+
+The application uses SQLite with a database file named `plants.db` that will be created automatically when you first run the application.
+
+## File Storage
+
+Uploaded images are stored in the `static/` directory and served via the `/static/` endpoint. The imagePath field in the database will be updated to point to the uploaded file.
+
+## Test
+
+```bash
+# unit tests
+npm run test
+
+# e2e tests
+npm run test:e2e
+
+# test coverage
+npm run test:cov
+```
