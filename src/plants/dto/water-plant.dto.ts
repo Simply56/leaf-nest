@@ -4,4 +4,4 @@ export class WaterPlantDto {
   @IsOptional()
   @IsDateString()
   wateredAt?: string;
-} 
+}

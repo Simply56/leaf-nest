@@ -13,7 +13,7 @@ export class PlantsService {
   constructor(
     @InjectRepository(Plant)
     private readonly plantRepository: Repository<Plant>,
-  ) { }
+  ) {}
 
   async create(createPlantDto: CreatePlantDto): Promise<Plant> {
     const plant = this.plantRepository.create(createPlantDto);
@@ -45,7 +45,9 @@ export class PlantsService {
 
   async waterPlant(id: number, waterPlantDto: WaterPlantDto): Promise<Plant> {
     const plant = await this.findOne(id);
-    plant.lastWatered = waterPlantDto.wateredAt ? new Date(waterPlantDto.wateredAt) : new Date();
+    plant.lastWatered = waterPlantDto.wateredAt
+      ? new Date(waterPlantDto.wateredAt)
+      : new Date();
     return await this.plantRepository.save(plant);
   }
 
