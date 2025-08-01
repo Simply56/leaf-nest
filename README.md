@@ -145,7 +145,7 @@ Create a new plant
 ```json
 {
   "name": "My Plant",
-  "imagePath": "./static/defaultPlant.png",
+  "imagePath": "/static/defaultPlant.png",
   "lastWatered": "2025-01-29T00:00:00.000Z"
 }
 ```
@@ -157,7 +157,7 @@ Update a plant
 ```json
 {
   "name": "Updated Plant Name",
-  "imagePath": "./static/newImage.png"
+  "imagePath": "/static/newImage.png"
 }
 ```
 

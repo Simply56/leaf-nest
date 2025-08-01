@@ -13,7 +13,7 @@ export class PlantsService {
   constructor(
     @InjectRepository(Plant)
     private readonly plantRepository: Repository<Plant>,
-  ) {}
+  ) { }
 
   async create(createPlantDto: CreatePlantDto): Promise<Plant> {
     const plant = this.plantRepository.create(createPlantDto);
@@ -51,17 +51,17 @@ export class PlantsService {
 
   async uploadImage(id: number, file: Express.Multer.File): Promise<Plant> {
     const plant = await this.findOne(id);
-    
+
     // Generate unique filename
     const timestamp = Date.now();
     const originalName = file.originalname;
     const extension = path.extname(originalName);
     const filename = `plant_${id}_${timestamp}${extension}`;
-    
+
     // Save file to static folder
     const filePath = path.join(process.cwd(), 'static', filename);
     fs.writeFileSync(filePath, file.buffer);
-    
+
     // Update plant's imagePath
     plant.imagePath = `/static/${filename}`;
     return await this.plantRepository.save(plant);
