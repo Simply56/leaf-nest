@@ -11,7 +11,7 @@ import { Plant } from './plants/entities/plant.entity';
       type: 'sqlite',
       database: 'plants.db',
       entities: [Plant],
-      // synchronize: true, // Be careful with this in production
+      synchronize: true, // Be careful with this in production
     }),
     PlantsModule,
   ],
