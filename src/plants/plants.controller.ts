@@ -18,7 +18,7 @@ import { WaterPlantDto } from './dto/water-plant.dto';
 
 @Controller('plants')
 export class PlantsController {
-  constructor(private readonly plantsService: PlantsService) {}
+  constructor(private readonly plantsService: PlantsService) { }
 
   @Post()
   create(@Body() createPlantDto: CreatePlantDto) {
@@ -45,7 +45,7 @@ export class PlantsController {
     return this.plantsService.remove(+id);
   }
 
-  @Post(':id/water')
+  @Patch(':id/water')
   waterPlant(@Param('id') id: string, @Body() waterPlantDto: WaterPlantDto) {
     return this.plantsService.waterPlant(+id, waterPlantDto);
   }
