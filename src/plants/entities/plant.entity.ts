@@ -1,5 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
+export const DEFAULT_PLANT_IMAGE_PATH = '/static/defaultPlant.png';
+
 @Entity('plants')
 export class Plant {
   @PrimaryGeneratedColumn()
@@ -8,7 +10,7 @@ export class Plant {
   @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column({ type: 'varchar', length: 500, default: '/static/defaultPlant.png' })
+  @Column({ type: 'varchar', length: 500, default: DEFAULT_PLANT_IMAGE_PATH })
   imagePath: string;
 
   @Column({ type: 'datetime', nullable: true })

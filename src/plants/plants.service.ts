@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Plant } from './entities/plant.entity';
+import { DEFAULT_PLANT_IMAGE_PATH, Plant } from './entities/plant.entity';
 import { CreatePlantDto } from './dto/create-plant.dto';
 import { UpdatePlantDto } from './dto/update-plant.dto';
 import { WaterPlantDto } from './dto/water-plant.dto';
@@ -13,7 +13,7 @@ export class PlantsService {
   constructor(
     @InjectRepository(Plant)
     private readonly plantRepository: Repository<Plant>,
-  ) {}
+  ) { }
 
   async create(createPlantDto: CreatePlantDto): Promise<Plant> {
     const plant = this.plantRepository.create(createPlantDto);
@@ -26,7 +26,7 @@ export class PlantsService {
 
   async findOne(id: number): Promise<Plant> {
     const plant = await this.plantRepository.findOne({ where: { id } });
-    if (!plant) {
+    if (plant == null) {
       throw new NotFoundException(`Plant with ID ${id} not found`);
     }
     return plant;
@@ -40,6 +40,7 @@ export class PlantsService {
 
   async remove(id: number): Promise<void> {
     const plant = await this.findOne(id);
+    await this.removeImage(plant);
     await this.plantRepository.remove(plant);
   }
 
@@ -54,6 +55,8 @@ export class PlantsService {
   async uploadImage(id: number, file: Express.Multer.File): Promise<Plant> {
     const plant = await this.findOne(id);
 
+    await this.removeImage(plant);
+
     // Generate unique filename
     const timestamp = Date.now();
     const originalName = file.originalname;
@@ -61,11 +64,19 @@ export class PlantsService {
     const filename = `plant_${id}_${timestamp}${extension}`;
 
     // Save file to static folder
-    const filePath = path.join(process.cwd(), 'static', filename);
+    const filePath = path.join(__dirname, 'static', filename);
     fs.writeFileSync(filePath, file.buffer);
 
     // Update plant's imagePath
     plant.imagePath = `/static/${filename}`;
     return await this.plantRepository.save(plant);
+  }
+
+  private async removeImage(plant: Plant) {
+    if (plant.imagePath === DEFAULT_PLANT_IMAGE_PATH) {
+      return;
+    }
+    fs.unlinkSync(path.join(process.cwd(), plant.imagePath));
+    plant.imagePath = DEFAULT_PLANT_IMAGE_PATH;
   }
 }
