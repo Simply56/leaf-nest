@@ -18,7 +18,7 @@ import { WaterPlantDto } from './dto/water-plant.dto';
 
 @Controller('plants')
 export class PlantsController {
-  constructor(private readonly plantsService: PlantsService) { }
+  constructor(private readonly plantsService: PlantsService) {}
 
   @Post()
   create(@Body() createPlantDto: CreatePlantDto) {

@@ -13,7 +13,7 @@ export class PlantsService {
   constructor(
     @InjectRepository(Plant)
     private readonly plantRepository: Repository<Plant>,
-  ) { }
+  ) {}
 
   async create(createPlantDto: CreatePlantDto): Promise<Plant> {
     const plant = this.plantRepository.create(createPlantDto);
@@ -40,7 +40,7 @@ export class PlantsService {
 
   async remove(id: number): Promise<void> {
     const plant = await this.findOne(id);
-    await this.removeImage(plant);
+    this.removeImage(plant);
     await this.plantRepository.remove(plant);
   }
 
@@ -55,7 +55,7 @@ export class PlantsService {
   async uploadImage(id: number, file: Express.Multer.File): Promise<Plant> {
     const plant = await this.findOne(id);
 
-    await this.removeImage(plant);
+    this.removeImage(plant);
 
     // Generate unique filename
     const timestamp = Date.now();
@@ -72,7 +72,7 @@ export class PlantsService {
     return await this.plantRepository.save(plant);
   }
 
-  private async removeImage(plant: Plant) {
+  private removeImage(plant: Plant) {
     if (plant.imagePath === DEFAULT_PLANT_IMAGE_PATH) {
       return;
     }
