@@ -31,6 +31,10 @@ export class PlantDto {
 }
 
 export class UploadImageDto {
-  @ApiProperty({ type: 'string', format: 'binary', description: 'Image file to upload' })
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    description: 'Image file to upload',
+  })
   image: any;
 }
