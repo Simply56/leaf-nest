@@ -9,48 +9,50 @@ import {
   UseInterceptors,
   UploadedFile,
   BadRequestException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PlantsService } from './plants.service';
-import { CreatePlantDto } from './dto/create-plant.dto';
-import { UpdatePlantDto } from './dto/update-plant.dto';
-import { WaterPlantDto } from './dto/water-plant.dto';
+import { PlantDto, UploadImageDto } from './dto/create-plant.dto';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { Plant } from './entities/plant.entity';
 
+@ApiTags('plants')
 @Controller('plants')
 export class PlantsController {
   constructor(private readonly plantsService: PlantsService) {}
 
   @Post()
-  create(@Body() createPlantDto: CreatePlantDto) {
+  create(@Body() createPlantDto: PlantDto): Promise<Plant> {
     return this.plantsService.create(createPlantDto);
   }
 
   @Get()
-  findAll() {
+  findAll(): Promise<Plant[]> {
     return this.plantsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.plantsService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<Plant> {
+    return this.plantsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePlantDto: UpdatePlantDto) {
-    return this.plantsService.update(+id, updatePlantDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatePlantDto: PlantDto,
+  ): Promise<Plant> {
+    return this.plantsService.update(id, updatePlantDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.plantsService.remove(+id);
-  }
-
-  @Patch(':id/water')
-  waterPlant(@Param('id') id: string, @Body() waterPlantDto: WaterPlantDto) {
-    return this.plantsService.waterPlant(+id, waterPlantDto);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.plantsService.remove(id);
   }
 
   @Post(':id/image')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ description: 'Image upload payload', type: UploadImageDto })
   @UseInterceptors(
     FileInterceptor('image', {
       storage: undefined, // Use memory storage
@@ -71,14 +73,14 @@ export class PlantsController {
     }),
   )
   uploadImage(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @UploadedFile() file: Express.Multer.File,
-  ) {
+  ): Promise<Plant> {
     if (!file) {
       throw new BadRequestException(
         'No image file uploaded. Please provide an image file.',
       );
     }
-    return this.plantsService.uploadImage(+id, file);
+    return this.plantsService.uploadImage(id, file);
   }
 }

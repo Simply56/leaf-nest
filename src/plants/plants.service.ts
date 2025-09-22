@@ -2,9 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DEFAULT_PLANT_IMAGE_PATH, Plant } from './entities/plant.entity';
-import { CreatePlantDto } from './dto/create-plant.dto';
-import { UpdatePlantDto } from './dto/update-plant.dto';
-import { WaterPlantDto } from './dto/water-plant.dto';
+import { PlantDto } from './dto/create-plant.dto';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -15,7 +13,7 @@ export class PlantsService {
     private readonly plantRepository: Repository<Plant>,
   ) {}
 
-  async create(createPlantDto: CreatePlantDto): Promise<Plant> {
+  async create(createPlantDto: PlantDto): Promise<Plant> {
     const plant = this.plantRepository.create(createPlantDto);
     return await this.plantRepository.save(plant);
   }
@@ -32,7 +30,7 @@ export class PlantsService {
     return plant;
   }
 
-  async update(id: number, updatePlantDto: UpdatePlantDto): Promise<Plant> {
+  async update(id: number, updatePlantDto: PlantDto): Promise<Plant> {
     const plant = await this.findOne(id);
     Object.assign(plant, updatePlantDto);
     return await this.plantRepository.save(plant);
@@ -42,14 +40,6 @@ export class PlantsService {
     const plant = await this.findOne(id);
     this.removeImage(plant);
     await this.plantRepository.remove(plant);
-  }
-
-  async waterPlant(id: number, waterPlantDto: WaterPlantDto): Promise<Plant> {
-    const plant = await this.findOne(id);
-    plant.lastWatered = waterPlantDto.wateredAt
-      ? new Date(waterPlantDto.wateredAt)
-      : new Date();
-    return await this.plantRepository.save(plant);
   }
 
   async uploadImage(id: number, file: Express.Multer.File): Promise<Plant> {
