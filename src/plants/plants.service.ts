@@ -44,7 +44,6 @@ export class PlantsService {
 
   async uploadImage(id: number, file: Express.Multer.File): Promise<Plant> {
     const plant = await this.findOne(id);
-
     this.removeImage(plant);
 
     // Generate unique filename
@@ -54,7 +53,7 @@ export class PlantsService {
     const filename = `plant_${id}_${timestamp}${extension}`;
 
     // Save file to static folder
-    const filePath = path.join(__dirname, 'static', filename);
+    const filePath = path.join(process.cwd(), 'static', filename);
     fs.writeFileSync(filePath, file.buffer);
 
     // Update plant's imagePath
@@ -66,7 +65,11 @@ export class PlantsService {
     if (plant.imagePath === DEFAULT_PLANT_IMAGE_PATH) {
       return;
     }
-    fs.unlinkSync(path.join(process.cwd(), plant.imagePath));
-    plant.imagePath = DEFAULT_PLANT_IMAGE_PATH;
+    try {
+      fs.unlinkSync(path.join(process.cwd(), plant.imagePath));
+      plant.imagePath = DEFAULT_PLANT_IMAGE_PATH;
+    } catch (error) {
+      console.log('Delete failed');
+    }
   }
 }

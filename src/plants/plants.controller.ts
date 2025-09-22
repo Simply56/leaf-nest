@@ -20,7 +20,7 @@ import { Plant } from './entities/plant.entity';
 @ApiTags('plants')
 @Controller('plants')
 export class PlantsController {
-  constructor(private readonly plantsService: PlantsService) {}
+  constructor(private readonly plantsService: PlantsService) { }
 
   @Post()
   create(@Body() createPlantDto: PlantDto): Promise<Plant> {
@@ -72,7 +72,7 @@ export class PlantsController {
       },
     }),
   )
-  uploadImage(
+  async uploadImage(
     @Param('id', ParseIntPipe) id: number,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<Plant> {
@@ -81,6 +81,7 @@ export class PlantsController {
         'No image file uploaded. Please provide an image file.',
       );
     }
-    return this.plantsService.uploadImage(id, file);
+
+    return await this.plantsService.uploadImage(id, file);
   }
 }
