@@ -2,16 +2,19 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DEFAULT_PLANT_IMAGE_PATH, Plant } from './entities/plant.entity';
-import { PlantDto } from './dto/create-plant.dto';
+import { PlantDto } from './dto/plant.dto';
 import * as fs from 'fs';
 import * as path from 'path';
+import tinify from 'tinify';
 
 @Injectable()
 export class PlantsService {
   constructor(
     @InjectRepository(Plant)
     private readonly plantRepository: Repository<Plant>,
-  ) {}
+  ) {
+    tinify.key = 'PJKGghx7hhZpt5TCyGXDNCKgNTKd2yMK';
+  }
 
   async create(createPlantDto: PlantDto): Promise<Plant> {
     const plant = this.plantRepository.create(createPlantDto);
@@ -46,19 +49,35 @@ export class PlantsService {
     const plant = await this.findOne(id);
     this.removeImage(plant);
 
-    // Generate unique filename
     const timestamp = Date.now();
-    const originalName = file.originalname;
-    const extension = path.extname(originalName);
+    const extension = path.extname(file.originalname);
     const filename = `plant_${id}_${timestamp}${extension}`;
-
-    // Save file to static folder
     const filePath = path.join(process.cwd(), 'static', filename);
-    fs.writeFileSync(filePath, file.buffer);
 
-    // Update plant's imagePath
+    // Save raw file immediately
+    await fs.promises.writeFile(filePath, file.buffer);
+
+    // Update DB with raw path
     plant.imagePath = `/static/${filename}`;
-    return await this.plantRepository.save(plant);
+    const savedPlant = await this.plantRepository.save(plant);
+
+    // Kick off background compression (don’t await)
+    void (async () => {
+      try {
+        const tempPath = filePath + '.tmp';
+        await tinify
+          .fromFile(filePath)
+          .resize({ method: 'cover', width: 500, height: 500 })
+          .toFile(tempPath);
+
+        await fs.promises.rename(tempPath, filePath);
+      } catch (err) {
+        console.error('Tinify failed:', err);
+        // Optionally keep raw image if compression fails
+      }
+    })();
+
+    return savedPlant;
   }
 
   private removeImage(plant: Plant) {

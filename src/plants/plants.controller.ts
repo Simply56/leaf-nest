@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PlantsService } from './plants.service';
-import { PlantDto, UploadImageDto } from './dto/create-plant.dto';
+import { PlantDto, UploadImageDto } from './dto/plant.dto';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Plant } from './entities/plant.entity';
 
