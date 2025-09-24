@@ -87,7 +87,10 @@ export class PlantsService {
     try {
       fs.unlinkSync(path.join(process.cwd(), plant.imagePath));
       plant.imagePath = DEFAULT_PLANT_IMAGE_PATH;
-    } catch (error) {
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        console.log(e);
+      }
       console.log('Delete failed');
     }
   }
