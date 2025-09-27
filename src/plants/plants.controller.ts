@@ -10,15 +10,18 @@ import {
   UploadedFile,
   BadRequestException,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PlantsService } from './plants.service';
 import { PlantDto, UploadImageDto } from './dto/plant.dto';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Plant } from './entities/plant.entity';
+import { ApiKeyGuard } from '../auth/api-key.guard';
 
 @ApiTags('plants')
 @Controller('plants')
+@UseGuards(ApiKeyGuard)
 export class PlantsController {
   constructor(private readonly plantsService: PlantsService) { }
 
