@@ -23,7 +23,7 @@ import { ApiKeyGuard } from '../auth/api-key.guard';
 @Controller('plants')
 @UseGuards(ApiKeyGuard)
 export class PlantsController {
-  constructor(private readonly plantsService: PlantsService) { }
+  constructor(private readonly plantsService: PlantsService) {}
 
   @Post()
   create(@Body() createPlantDto: PlantDto): Promise<Plant> {

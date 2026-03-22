@@ -10,7 +10,9 @@ export class ApiKeyGuard implements CanActivate {
   private readonly validApiKey = process.env['LEAF_API_KEY'];
 
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
+    const request = context
+      .switchToHttp()
+      .getRequest<{ query: { apiKey?: string } }>();
     const apiKey = request.query.apiKey;
 
     if (!apiKey) {
