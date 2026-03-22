@@ -1,7 +1,7 @@
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import * as fs from "fs";
-import * as path from "path";
 import tinify from "tinify";
 import type { Repository } from "typeorm";
 import type { PlantDto } from "./dto/plant.dto";
@@ -64,7 +64,7 @@ export class PlantsService {
         // Kick off background compression (don’t await)
         void (async () => {
             try {
-                const tempPath = filePath + ".tmp";
+                const tempPath = `${filePath}.tmp`;
                 await tinify
                     .fromFile(filePath)
                     .resize({ method: "cover", width: 500, height: 500 })

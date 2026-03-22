@@ -7,7 +7,7 @@ import {
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
-    private readonly validApiKey = process.env["LEAF_API_KEY"];
+    private readonly validApiKey = process.env.LEAF_API_KEY;
 
     canActivate(context: ExecutionContext): boolean {
         const request = context

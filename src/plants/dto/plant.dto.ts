@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { IsDateString, IsOptional, IsString } from "class-validator";
+import type { Express } from "express";
 
 export class PlantDto {
     @ApiPropertyOptional({
@@ -36,5 +37,5 @@ export class UploadImageDto {
         format: "binary",
         description: "Image file to upload",
     })
-    image: any;
+    image: Express.Multer.File;
 }

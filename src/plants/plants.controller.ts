@@ -59,7 +59,7 @@ export class PlantsController {
     @UseInterceptors(
         FileInterceptor("image", {
             storage: undefined, // Use memory storage
-            fileFilter: (req, file, cb) => {
+            fileFilter: (_req, file, cb) => {
                 if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
                     return cb(
                         new BadRequestException(
