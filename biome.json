@@ -3,5 +3,10 @@
     "formatter": {
         "indentStyle": "space",
         "indentWidth": 4
+    },
+    "javascript": {
+        "parser": {
+            "unsafeParameterDecoratorsEnabled": true
+        }
     }
 }
