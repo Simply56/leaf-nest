@@ -4,10 +4,15 @@ import {
     Injectable,
     UnauthorizedException,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
-    private readonly validApiKey = process.env.LEAF_API_KEY;
+    private readonly validApiKey: string;
+
+    constructor(config: ConfigService) {
+        this.validApiKey = config.getOrThrow<string>("LEAF_API_KEY");
+    }
 
     canActivate(context: ExecutionContext): boolean {
         const request = context
