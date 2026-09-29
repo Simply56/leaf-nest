@@ -15,7 +15,7 @@ import {
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { ApiKeyGuard } from "../auth/api-key.guard";
-import { type PlantDto, UploadImageDto } from "./dto/plant.dto";
+import { PlantDto, UploadImageDto } from "./dto/plant.dto";
 import type { Plant } from "./entities/plant.entity";
 import { PlantsService } from "./plants.service";
 
